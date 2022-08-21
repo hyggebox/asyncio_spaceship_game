@@ -2,6 +2,9 @@ import asyncio
 import curses
 import random
 
+from fire_animation import fire
+
+
 TIC_TIMEOUT = 0.1
 STAR_SYMBOLS = '+*.:'
 STARTS_NUM = 160
@@ -36,6 +39,10 @@ def draw(canvas):
                   random.randint(0, 800),
                   symbol=random.choice(STAR_SYMBOLS),
                   ))
+    coroutines.append(fire(canvas,
+                           canvas_height // 2,
+                           canvas_width // 2,
+                           rows_speed=-0.01))
 
     canvas.border()
     curses.curs_set(False)
