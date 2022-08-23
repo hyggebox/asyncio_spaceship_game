@@ -8,24 +8,23 @@ from fire_animation import fire
 from curses_tools import draw_frame, read_controls, get_frame_size
 
 
-TIC_TIMEOUT = 0.1
+TIC_TIMEOUT = 0.05
 STAR_SYMBOLS = '+*.:'
 STARTS_NUM = 160
 
 
 async def blink(canvas, row, column, timeout, symbol='*'):
     star_stages = [
-        (curses.A_DIM, 200),
-        (curses.A_NORMAL, 30),
-        (curses.A_BOLD, 20),
-        (curses.A_NORMAL, 30),
+        (curses.A_DIM, 20),
+        (curses.A_NORMAL, 3),
+        (curses.A_BOLD, 2),
+        (curses.A_NORMAL, 3),
     ]
-
     for _ in range(timeout):
         await asyncio.sleep(0)
     while True:
         for appearance, tics_num in star_stages:
-            for i in range(tics_num):
+            for i in range(int(tics_num/TIC_TIMEOUT)):
                 canvas.addch(row, column, symbol, appearance)
                 await asyncio.sleep(0)
 
