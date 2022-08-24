@@ -38,7 +38,6 @@ async def animate_spaceship(canvas, frames):
 
     for frame in cycle(frames):
         for _ in range(2):
-
             row_dir, col_dir, space_pressed = read_controls(canvas)
             current_row += row_dir
             current_column += col_dir
@@ -53,10 +52,10 @@ async def animate_spaceship(canvas, frames):
                 current_row = canvas_height - frame_rows - 1
 
             draw_frame(canvas, current_row, current_column, frame)
-            canvas.refresh()
+            await asyncio.sleep(0)
             draw_frame(canvas, current_row, current_column, frame,
                        negative=True)
-            await asyncio.sleep(0)
+
 
 
 def draw(canvas):
@@ -88,8 +87,6 @@ def draw(canvas):
     canvas.nodelay(True)
     curses.curs_set(False)
     while True:
-        canvas.refresh()
-
         for coroutine in coroutines.copy():
             try:
                 coroutine.send(None)
@@ -97,6 +94,7 @@ def draw(canvas):
                 coroutines.remove(coroutine)
         if len(coroutines) == 0:
             break
+        canvas.refresh()
 
 
 if __name__ == '__main__':
