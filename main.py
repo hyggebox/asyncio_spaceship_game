@@ -24,7 +24,7 @@ async def blink(canvas, row, column, timeout, symbol='*'):
         await asyncio.sleep(0)
     while True:
         for appearance, tics_num in star_stages:
-            for i in range(int(tics_num/TIC_TIMEOUT)):
+            for _ in range(int(tics_num/TIC_TIMEOUT)):
                 canvas.addch(row, column, symbol, appearance)
                 await asyncio.sleep(0)
 
