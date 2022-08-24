@@ -92,8 +92,7 @@ def draw(canvas):
                 coroutine.send(None)
             except StopIteration:
                 coroutines.remove(coroutine)
-        if not coroutines:
-            break
+
         canvas.refresh()
 
 
