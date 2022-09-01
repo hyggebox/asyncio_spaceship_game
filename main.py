@@ -7,6 +7,7 @@ from time import sleep
 
 from fire_animation import fire
 from curses_tools import draw_frame, read_controls, get_frame_size
+from space_garbage import fly_garbage
 
 
 TIC_TIMEOUT = 0.1
@@ -58,14 +59,35 @@ async def animate_spaceship(canvas, frames):
                        negative=True)
 
 
+async def fill_orbit_with_garbage(canvas, canvas_width, frames):
+
+    while True:
+        current_frame = random.choice(frames)
+        frame_height, frame_width = get_frame_size(current_frame)
+
+        coroutines.append(fly_garbage(canvas,
+                                      random.randint(1,
+                                                     canvas_width - frame_width - 1),
+                                      current_frame))
+        for _ in range(random.randint(5, 20)):
+            await asyncio.sleep(0)
+
 
 def draw(canvas):
+    global coroutines
     frame_files = os.listdir('rocket_frames')
     frames = []
     for file_name in frame_files:
         with open(os.path.join('rocket_frames', file_name)) as file:
             frame = file.read()
             frames.append(frame)
+
+    garbage_frames_files = os.listdir('garbage')
+    garbage_frames = []
+    for file_name in garbage_frames_files:
+        with open(os.path.join('garbage', file_name)) as file:
+            garbage_frame = file.read()
+            garbage_frames.append(garbage_frame)
 
     canvas_height, canvas_width = canvas.getmaxyx()
     coroutines = []
@@ -83,6 +105,9 @@ def draw(canvas):
                            canvas_width // 2,
                            rows_speed=-0.5))
     coroutines.append(animate_spaceship(canvas, frames))
+    coroutines.append(fill_orbit_with_garbage(canvas,
+                                              canvas_width,
+                                              garbage_frames))
 
     canvas.border()
     canvas.nodelay(True)
