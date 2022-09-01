@@ -2,8 +2,8 @@ import asyncio
 import curses
 import os
 import random
+import time
 from itertools import cycle
-from time import sleep
 
 from fire_animation import fire
 from curses_tools import draw_frame, read_controls, get_frame_size
@@ -15,6 +15,12 @@ STAR_SYMBOLS = '+*.:'
 STARTS_NUM = 160
 
 
+async def sleep(tics=1):
+
+    for _ in range(tics):
+        await asyncio.sleep(0)
+
+
 async def blink(canvas, row, column, timeout, symbol='*'):
     star_stages = [
         (curses.A_DIM, 20),
@@ -22,13 +28,12 @@ async def blink(canvas, row, column, timeout, symbol='*'):
         (curses.A_BOLD, 2),
         (curses.A_NORMAL, 3),
     ]
-    for _ in range(timeout):
-        await asyncio.sleep(0)
+    await sleep(timeout)
     while True:
         for appearance, tics_num in star_stages:
             for _ in range(tics_num):
                 canvas.addch(row, column, symbol, appearance)
-                await asyncio.sleep(0)
+                await sleep()
 
 
 async def animate_spaceship(canvas, frames):
@@ -54,7 +59,7 @@ async def animate_spaceship(canvas, frames):
                 current_row = canvas_height - frame_rows - 1
 
             draw_frame(canvas, current_row, current_column, frame)
-            await asyncio.sleep(0)
+            await sleep()
             draw_frame(canvas, current_row, current_column, frame,
                        negative=True)
 
@@ -69,8 +74,7 @@ async def fill_orbit_with_garbage(canvas, canvas_width, frames):
                                       random.randint(1,
                                                      canvas_width - frame_width - 1),
                                       current_frame))
-        for _ in range(random.randint(5, 20)):
-            await asyncio.sleep(0)
+        await sleep(random.randint(5, 20))
 
 
 def draw(canvas):
@@ -119,7 +123,7 @@ def draw(canvas):
             except StopIteration:
                 coroutines.remove(coroutine)
         canvas.refresh()
-        sleep(TIC_TIMEOUT)
+        time.sleep(TIC_TIMEOUT)
 
 
 if __name__ == '__main__':
