@@ -5,8 +5,9 @@ import random
 import time
 from itertools import cycle
 
-from fire_animation import fire
 from curses_tools import draw_frame, read_controls, get_frame_size
+from fire_animation import fire
+from physics import update_speed
 from space_garbage import fly_garbage
 
 
@@ -46,8 +47,11 @@ async def animate_spaceship(canvas, frames):
     for frame in cycle(frames):
         for _ in range(2):
             row_dir, col_dir, space_pressed = read_controls(canvas)
-            current_row += row_dir
-            current_column += col_dir
+            row_speed = col_speed = 0
+            row_speed, col_speed = update_speed(row_speed, col_speed, row_dir,
+                                                col_dir)
+            current_row += row_speed
+            current_column += col_speed
 
             if current_column < 1:
                 current_column = 1
