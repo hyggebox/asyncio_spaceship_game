@@ -47,6 +47,13 @@ async def animate_spaceship(canvas, frames):
     for frame in cycle(frames):
         for _ in range(2):
             row_dir, col_dir, space_pressed = read_controls(canvas)
+
+            if space_pressed:
+                coroutines.append(fire(canvas,
+                                       current_row,
+                                       current_column + frame_cols // 2,
+                                       rows_speed=-0.5))
+
             row_speed = col_speed = 0
             row_speed, col_speed = update_speed(row_speed, col_speed, row_dir,
                                                 col_dir)
