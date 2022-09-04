@@ -61,7 +61,7 @@ async def animate_spaceship(canvas, frames):
         for _ in range(2):
             row_dir, col_dir, space_pressed = read_controls(canvas)
 
-            if space_pressed:
+            if year >= 2020 and space_pressed:
                 coroutines.append(fire(canvas,
                                        current_row,
                                        current_column + frame_cols // 2,
