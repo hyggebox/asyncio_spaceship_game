@@ -241,7 +241,6 @@ def draw(canvas):
     coroutines.append(fill_orbit_with_garbage(canvas,
                                               canvas_width,
                                               garbage_frames))
-    coroutines.append(show_obstacles(canvas, obstacles))
     coroutines.append(show_year(canvas))
 
     canvas.border()
