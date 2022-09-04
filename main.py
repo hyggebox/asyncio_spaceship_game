@@ -73,6 +73,10 @@ async def animate_spaceship(canvas, frames):
             await sleep()
             draw_frame(canvas, current_row, current_column, frame,
                        negative=True)
+            for obstacle in obstacles:
+                if obstacle.has_collision(current_row, current_column):
+                    coroutines.append(show_game_over(canvas))
+                    return
 
 
 async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0):
@@ -160,6 +164,21 @@ async def fill_orbit_with_garbage(canvas, canvas_width, frames):
                                       current_frame,
                                       frame_col_coord))
         await sleep(random.randint(5, 20))
+
+
+async def show_game_over(canvas):
+    with open('game_over.txt') as file:
+        game_over_frame = file.read()
+
+    canvas_height, canvas_width = canvas.getmaxyx()
+    frame_height, frame_width = get_frame_size(game_over_frame)
+
+    row = (canvas_height - frame_height) // 2
+    column = (canvas_width - frame_width) // 2
+
+    while True:
+        draw_frame(canvas, row, column, game_over_frame)
+        await sleep()
 
 
 def draw(canvas):
