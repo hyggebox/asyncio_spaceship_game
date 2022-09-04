@@ -41,11 +41,16 @@ async def blink(canvas, row, column, timeout, symbol='*'):
 async def show_year(canvas):
     global year
     canvas_height, canvas_width = canvas.getmaxyx()
+    previous_phrase = ''
 
     while True:
-        message = 'Year: {} - {}'
+        message = 'Year: {} {}'
         canvas.addstr(canvas_height - 2, 2,
-                      message.format(year, PHRASES.get(year, '')))
+                      message.format(
+                          year,
+                          PHRASES.get(year, len(previous_phrase)*' ')
+                      ))
+        previous_phrase = PHRASES.get(year) or ''
         await sleep(15)
         year += 1
 
