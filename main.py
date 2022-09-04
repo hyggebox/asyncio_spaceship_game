@@ -77,6 +77,8 @@ async def animate_spaceship(canvas, frames):
 async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0):
     """Display animation of gun shot, direction and speed can be specified."""
     global obstacles
+    global obstacles_in_last_collisions
+    obstacles_in_last_collisions = []
 
     row, column = start_row, start_column
 
@@ -109,6 +111,7 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
                                       column,
                                       obj_size_rows=1,
                                       obj_size_columns=1):
+                obstacles_in_last_collisions.append(obstacle)
                 return
 
 
@@ -133,6 +136,9 @@ async def fly_garbage(canvas, column, garbage_frame, frame_col_coord,
         await asyncio.sleep(0)
         draw_frame(canvas, row, column, garbage_frame, negative=True)
         obstacles.remove(obstacle_instance)
+        if obstacle_instance in obstacles_in_last_collisions:
+            obstacles_in_last_collisions.remove(obstacle_instance)
+            return
         row += speed
 
 
