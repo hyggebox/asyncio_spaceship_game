@@ -91,11 +91,11 @@ async def fly_garbage(canvas, column, garbage_frame, frame_col_coord,
 
     while row < rows_number:
         draw_frame(canvas, row, column, garbage_frame)
-        obst = Obstacle(row, frame_col_coord, frame_height, frame_width)
-        obstacles.append(obst)
+        obstacle_instance = Obstacle(row, frame_col_coord, frame_height, frame_width)
+        obstacles.append(obstacle_instance)
         await asyncio.sleep(0)
         draw_frame(canvas, row, column, garbage_frame, negative=True)
-        obstacles.remove(obst)
+        obstacles.remove(obstacle_instance)
         row += speed
 
 
