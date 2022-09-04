@@ -7,6 +7,7 @@ from itertools import cycle
 
 from curses_tools import draw_frame, read_controls, get_frame_size
 from explosion import explode
+from game_scenario import get_garbage_delay_tics, PHRASES
 from obstacles import Obstacle, show_obstacles
 from physics import update_speed
 
@@ -35,6 +36,18 @@ async def blink(canvas, row, column, timeout, symbol='*'):
             for _ in range(tics_num):
                 canvas.addch(row, column, symbol, appearance)
                 await sleep()
+
+
+async def show_year(canvas):
+    global year
+    canvas_height, canvas_width = canvas.getmaxyx()
+
+    while True:
+        message = 'Year: {} - {}'
+        canvas.addstr(canvas_height - 2, 2,
+                      message.format(year, PHRASES.get(year, '')))
+        await sleep(15)
+        year += 1
 
 
 async def animate_spaceship(canvas, frames):
@@ -81,7 +94,6 @@ async def animate_spaceship(canvas, frames):
 
 async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0):
     """Display animation of gun shot, direction and speed can be specified."""
-    global obstacles
     global obstacles_in_last_collisions
     obstacles_in_last_collisions = []
 
@@ -155,15 +167,18 @@ async def fly_garbage(canvas, column, garbage_frame, frame_col_coord,
 async def fill_orbit_with_garbage(canvas, canvas_width, frames):
 
     while True:
-        current_frame = random.choice(frames)
-        frame_height, frame_width = get_frame_size(current_frame)
-        frame_col_coord = random.randint(1, canvas_width - frame_width - 1)
+        if year > 1961:
+            current_frame = random.choice(frames)
+            frame_height, frame_width = get_frame_size(current_frame)
+            frame_col_coord = random.randint(1, canvas_width - frame_width - 1)
 
-        coroutines.append(fly_garbage(canvas,
-                                      frame_col_coord,
-                                      current_frame,
-                                      frame_col_coord))
-        await sleep(random.randint(5, 20))
+            coroutines.append(fly_garbage(canvas,
+                                          frame_col_coord,
+                                          current_frame,
+                                          frame_col_coord))
+            await sleep(get_garbage_delay_tics(year))
+        else:
+            await sleep()
 
 
 async def show_game_over(canvas):
@@ -185,6 +200,8 @@ def draw(canvas):
     global coroutines
     global obstacles
     obstacles = []
+    global year
+    year = 1957
 
     frame_files = os.listdir('rocket_frames')
     frames = []
@@ -220,6 +237,7 @@ def draw(canvas):
                                               canvas_width,
                                               garbage_frames))
     coroutines.append(show_obstacles(canvas, obstacles))
+    coroutines.append(show_year(canvas))
 
     canvas.border()
     canvas.nodelay(True)
