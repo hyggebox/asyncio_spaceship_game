@@ -7,8 +7,8 @@ from itertools import cycle
 
 from curses_tools import draw_frame, read_controls, get_frame_size
 from fire_animation import fire
+from obstacles import Obstacle, show_obstacles
 from physics import update_speed
-from space_garbage import fly_garbage
 
 
 TIC_TIMEOUT = 0.1
@@ -75,21 +75,49 @@ async def animate_spaceship(canvas, frames):
                        negative=True)
 
 
+async def fly_garbage(canvas, column, garbage_frame, frame_col_coord,
+                      speed=0.5):
+    """
+    Animate garbage, flying from top to bottom. Сolumn position will
+    stay same, as specified on start.
+    """
+    frame_height, frame_width = get_frame_size(garbage_frame)
+    rows_number, columns_number = canvas.getmaxyx()
+
+    column = max(column, 0)
+    column = min(column, columns_number - 1)
+
+    row = 0
+
+    while row < rows_number:
+        draw_frame(canvas, row, column, garbage_frame)
+        obst = Obstacle(row, frame_col_coord, frame_height, frame_width)
+        obstacles.append(obst)
+        await asyncio.sleep(0)
+        draw_frame(canvas, row, column, garbage_frame, negative=True)
+        obstacles.remove(obst)
+        row += speed
+
+
 async def fill_orbit_with_garbage(canvas, canvas_width, frames):
 
     while True:
         current_frame = random.choice(frames)
         frame_height, frame_width = get_frame_size(current_frame)
+        frame_col_coord = random.randint(1, canvas_width - frame_width - 1)
 
         coroutines.append(fly_garbage(canvas,
-                                      random.randint(1,
-                                                     canvas_width - frame_width - 1),
-                                      current_frame))
+                                      frame_col_coord,
+                                      current_frame,
+                                      frame_col_coord))
         await sleep(random.randint(5, 20))
 
 
 def draw(canvas):
     global coroutines
+    global obstacles
+    obstacles = []
+
     frame_files = os.listdir('rocket_frames')
     frames = []
     for file_name in frame_files:
@@ -123,6 +151,7 @@ def draw(canvas):
     coroutines.append(fill_orbit_with_garbage(canvas,
                                               canvas_width,
                                               garbage_frames))
+    coroutines.append(show_obstacles(canvas, obstacles))
 
     canvas.border()
     canvas.nodelay(True)
