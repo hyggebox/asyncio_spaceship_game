@@ -5,11 +5,11 @@ import random
 import time
 from itertools import cycle
 
-from game_library.curses_tools import draw_frame, read_controls, get_frame_size
-from game_library.explosion import explode
-from game_library.game_scenario import get_garbage_delay_tics, PHRASES
-from game_library.obstacles import Obstacle
-from game_library.physics import update_speed
+from curses_tools import (draw_frame, read_controls, get_frame_size)
+from explosion import explode
+from game_scenario import get_garbage_delay_tics, PHRASES
+from obstacles import Obstacle
+from physics import update_speed
 
 
 TIC_TIMEOUT = 0.1
