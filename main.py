@@ -187,7 +187,7 @@ async def fill_orbit_with_garbage(canvas, canvas_width, frames):
 
 
 async def show_game_over(canvas):
-    with open('game_over.txt') as file:
+    with open('frames/game_over.txt') as file:
         game_over_frame = file.read()
 
     canvas_height, canvas_width = canvas.getmaxyx()
@@ -208,17 +208,17 @@ def draw(canvas):
     global year
     year = 1957
 
-    frame_files = os.listdir('rocket_frames')
+    frame_files = os.listdir('frames/rocket_frames')
     frames = []
     for file_name in frame_files:
-        with open(os.path.join('rocket_frames', file_name)) as file:
+        with open(os.path.join('frames/rocket_frames', file_name)) as file:
             frame = file.read()
             frames.append(frame)
 
-    garbage_frames_files = os.listdir('garbage_frames')
+    garbage_frames_files = os.listdir('frames/garbage_frames')
     garbage_frames = []
     for file_name in garbage_frames_files:
-        with open(os.path.join('garbage_frames', file_name)) as file:
+        with open(os.path.join('frames/garbage_frames', file_name)) as file:
             garbage_frame = file.read()
             garbage_frames.append(garbage_frame)
 
