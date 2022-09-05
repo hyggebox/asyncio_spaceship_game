@@ -20,7 +20,8 @@ python main.py
 
 ## Usage
 
-Press t=`UP`, `RIGHT`, `DOWN`, `LEFT` keys to move the spaceship.
+Press `UP`, `RIGHT`, `DOWN`, `LEFT` keys to move the spaceship.
+Press `Space` key to shoot.
 
 
 ## Project Goals
