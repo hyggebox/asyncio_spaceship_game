@@ -215,10 +215,10 @@ def draw(canvas):
             frame = file.read()
             frames.append(frame)
 
-    garbage_frames_files = os.listdir('garbage')
+    garbage_frames_files = os.listdir('garbage_frames')
     garbage_frames = []
     for file_name in garbage_frames_files:
-        with open(os.path.join('garbage', file_name)) as file:
+        with open(os.path.join('garbage_frames', file_name)) as file:
             garbage_frame = file.read()
             garbage_frames.append(garbage_frame)
 
