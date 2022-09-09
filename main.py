@@ -243,7 +243,6 @@ def draw(canvas):
                                               canvas_width,
                                               garbage_frames))
     coroutines.append(show_year(canvas))
-    coroutines.append(show_obstacles(canvas, obstacles))
 
     canvas.border()
     canvas.nodelay(True)
