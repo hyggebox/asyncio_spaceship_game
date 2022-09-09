@@ -80,14 +80,11 @@ async def animate_spaceship(canvas, frames):
             current_row += row_speed
             current_column += col_speed
 
-            if current_column < 1:
-                current_column = 1
-            elif current_column > (canvas_width - frame_cols - 1):
-                current_column = canvas_width - frame_cols - 1
-            if current_row < 1:
-                current_row = 1
-            elif current_row > (canvas_height - frame_rows - 1):
-                current_row = canvas_height - frame_rows - 1
+            right_edge = canvas_width - frame_cols - 1
+            current_column = max(1, min(current_column, right_edge))
+
+            lower_edge = canvas_height - frame_rows - 1
+            current_row = max(1, min(current_row, lower_edge))
 
             draw_frame(canvas, current_row, current_column, frame)
             await sleep()
