@@ -158,13 +158,13 @@ async def fly_garbage(canvas, column, garbage_frame, frame_col_coord,
 
     while row < rows_number:
         draw_frame(canvas, row, column, garbage_frame)
-        obstacle_instance = Obstacle(row, frame_col_coord, frame_height, frame_width)
-        obstacles.append(obstacle_instance)
+        obstacle = Obstacle(row, frame_col_coord, frame_height, frame_width)
+        obstacles.append(obstacle)
         await asyncio.sleep(0)
         draw_frame(canvas, row, column, garbage_frame, negative=True)
-        obstacles.remove(obstacle_instance)
-        if obstacle_instance in obstacles_in_last_collisions:
-            obstacles_in_last_collisions.remove(obstacle_instance)
+        obstacles.remove(obstacle)
+        if obstacle in obstacles_in_last_collisions:
+            obstacles_in_last_collisions.remove(obstacle)
             return
         row += speed
 
