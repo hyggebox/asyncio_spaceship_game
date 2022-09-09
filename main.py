@@ -8,7 +8,7 @@ from itertools import cycle
 from curses_tools import (draw_frame, read_controls, get_frame_size)
 from explosion import explode
 from game_scenario import get_garbage_delay_tics, PHRASES
-from obstacles import Obstacle
+from obstacles import Obstacle, show_obstacles
 from physics import update_speed
 
 
@@ -154,18 +154,19 @@ async def fly_garbage(canvas, column, garbage_frame, frame_col_coord,
     column = min(column, columns_number - 1)
 
     row = 0
-
+    obstacle = Obstacle(row, frame_col_coord, frame_height, frame_width)
+    obstacles.append(obstacle)
     while row < rows_number:
         draw_frame(canvas, row, column, garbage_frame)
-        obstacle = Obstacle(row, frame_col_coord, frame_height, frame_width)
-        obstacles.append(obstacle)
+        obstacle.row = row
         await asyncio.sleep(0)
         draw_frame(canvas, row, column, garbage_frame, negative=True)
-        obstacles.remove(obstacle)
         if obstacle in obstacles_in_last_collisions:
             obstacles_in_last_collisions.remove(obstacle)
+            obstacles.remove(obstacle)
             return
         row += speed
+    obstacles.remove(obstacle)
 
 
 async def fill_orbit_with_garbage(canvas, canvas_width, frames):
@@ -241,6 +242,7 @@ def draw(canvas):
                                               canvas_width,
                                               garbage_frames))
     coroutines.append(show_year(canvas))
+    coroutines.append(show_obstacles(canvas, obstacles))
 
     canvas.border()
     canvas.nodelay(True)
