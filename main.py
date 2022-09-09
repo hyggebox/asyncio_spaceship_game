@@ -45,7 +45,9 @@ async def show_year(canvas):
 
     while True:
         message = 'Year: {} {}'
-        canvas.addstr(canvas_height - 2, 2,
+        row = canvas_height - 2
+        column = 2
+        canvas.addstr(row, column,
                       message.format(
                           year,
                           PHRASES.get(year, len(previous_phrase)*' ')
