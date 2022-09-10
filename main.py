@@ -146,11 +146,12 @@ async def fire(canvas, start_row, start_column,
             ):
                 obstacles_in_last_collisions.append(obstacle)
                 obstacle_center_row = obstacle.row + obstacle.rows_size//2
-                obstacle_center_column = obstacle.column + obstacle.columns_size//2
-                coroutines.append(
-                    explode(canvas, obstacle_center_row,
-                            obstacle_center_column)
-                )
+                obstacle_center_col = obstacle.column + obstacle.columns_size//2
+                coroutines.append(explode(
+                    canvas,
+                    obstacle_center_row,
+                    obstacle_center_col
+                ))
                 return
 
 
