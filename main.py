@@ -15,6 +15,7 @@ from physics import update_speed
 TIC_TIMEOUT = 0.1
 STAR_SYMBOLS = '+*.:'
 STARTS_NUM = 160
+GET_GUN_YEAR = 2020
 
 
 async def sleep(tics=1):
@@ -70,7 +71,7 @@ async def animate_spaceship(canvas, frames):
         for _ in range(2):
             row_dir, col_dir, space_pressed = read_controls(canvas)
 
-            if year >= 2020 and space_pressed:
+            if year >= GET_GUN_YEAR and space_pressed:
                 coroutines.append(fire(
                     canvas,
                     current_row,
