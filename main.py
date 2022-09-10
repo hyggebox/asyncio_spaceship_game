@@ -8,7 +8,7 @@ from itertools import cycle
 from curses_tools import (draw_frame, read_controls, get_frame_size)
 from explosion import explode
 from game_scenario import get_garbage_delay_tics, PHRASES
-from obstacles import Obstacle, show_obstacles
+from obstacles import Obstacle
 from physics import update_speed
 
 
@@ -47,11 +47,13 @@ async def show_year(canvas):
         message = 'Year: {} {}'
         row = canvas_height - 2
         column = 2
-        canvas.addstr(row, column,
-                      message.format(
-                          year,
-                          PHRASES.get(year, len(previous_phrase)*' ')
-                      ))
+        canvas.addstr(
+            row,
+            column,
+            message.format(
+                year,
+                PHRASES.get(year, len(previous_phrase)*' ')
+            ))
         previous_phrase = PHRASES.get(year) or ''
         await sleep(15)
         year += 1
@@ -69,14 +71,20 @@ async def animate_spaceship(canvas, frames):
             row_dir, col_dir, space_pressed = read_controls(canvas)
 
             if year >= 2020 and space_pressed:
-                coroutines.append(fire(canvas,
-                                       current_row,
-                                       current_column + frame_cols // 2,
-                                       rows_speed=-0.5))
+                coroutines.append(fire(
+                    canvas,
+                    current_row,
+                    current_column + frame_cols // 2,
+                    rows_speed=-0.5
+                ))
 
             row_speed = col_speed = 0
-            row_speed, col_speed = update_speed(row_speed, col_speed, row_dir,
-                                                col_dir)
+            row_speed, col_speed = update_speed(
+                row_speed,
+                col_speed,
+                row_dir,
+                col_dir
+            )
             current_row += row_speed
             current_column += col_speed
 
@@ -96,7 +104,8 @@ async def animate_spaceship(canvas, frames):
                     return
 
 
-async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0):
+async def fire(canvas, start_row, start_column,
+               rows_speed=-0.3, columns_speed=0):
     """Display animation of gun shot, direction and speed can be specified."""
     global obstacles_in_last_collisions
     obstacles_in_last_collisions = []
@@ -128,15 +137,18 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
         column += columns_speed
 
         for obstacle in obstacles:
-            if obstacle.has_collision(row,
-                                      column,
-                                      obj_size_rows=1,
-                                      obj_size_columns=1):
+            if obstacle.has_collision(
+                    row,
+                    column,
+                    obj_size_rows=1,
+                    obj_size_columns=1
+            ):
                 obstacles_in_last_collisions.append(obstacle)
-                obstacle_center_row = obstacle.row + obstacle.rows_size // 2
-                obstacle_center_column = obstacle.column + obstacle.columns_size // 2
+                obstacle_center_row = obstacle.row + obstacle.rows_size//2
+                obstacle_center_column = obstacle.column + obstacle.columns_size//2
                 coroutines.append(
-                    explode(canvas, obstacle_center_row, obstacle_center_column)
+                    explode(canvas, obstacle_center_row,
+                            obstacle_center_column)
                 )
                 return
 
@@ -175,12 +187,14 @@ async def fill_orbit_with_garbage(canvas, canvas_width, frames):
         if year > 1961:
             current_frame = random.choice(frames)
             frame_height, frame_width = get_frame_size(current_frame)
-            frame_col_coord = random.randint(1, canvas_width - frame_width - 1)
+            frame_col_coord = random.randint(1, canvas_width-frame_width-1)
 
-            coroutines.append(fly_garbage(canvas,
-                                          frame_col_coord,
-                                          current_frame,
-                                          frame_col_coord))
+            coroutines.append(fly_garbage(
+                canvas,
+                frame_col_coord,
+                current_frame,
+                frame_col_coord
+            ))
             await sleep(get_garbage_delay_tics(year))
         else:
             await sleep()
@@ -227,21 +241,25 @@ def draw(canvas):
     coroutines = []
 
     for star in range(STARTS_NUM):
-        coroutines.append(
-            blink(canvas,
-                  random.randint(1, canvas_height - 2),
-                  random.randint(1, canvas_width - 2),
-                  random.randint(0, 20),
-                  symbol=random.choice(STAR_SYMBOLS),
-                  ))
-    coroutines.append(fire(canvas,
-                           canvas_height // 2,
-                           canvas_width // 2,
-                           rows_speed=-0.5))
+        coroutines.append(blink(
+            canvas,
+            random.randint(1, canvas_height - 2),
+            random.randint(1, canvas_width - 2),
+            random.randint(0, 20),
+            symbol=random.choice(STAR_SYMBOLS),
+        ))
+    coroutines.append(fire(
+        canvas,
+        canvas_height // 2,
+        canvas_width // 2,
+        rows_speed=-0.5
+    ))
     coroutines.append(animate_spaceship(canvas, frames))
-    coroutines.append(fill_orbit_with_garbage(canvas,
-                                              canvas_width,
-                                              garbage_frames))
+    coroutines.append(fill_orbit_with_garbage(
+        canvas,
+        canvas_width,
+        garbage_frames
+    ))
     coroutines.append(show_year(canvas))
 
     canvas.border()
